@@ -4,6 +4,7 @@ ini_set("error_reporting", E_ALL ^ E_WARNING);
 set_time_limit(0);
 
 $time_start = microtime(true);
+$ctr = 1;
 function getDirectoryListing($result, $path, $cat){
 	$path .= " > ".$cat;
 	$cat = str_replace(" ", "_", $cat);
@@ -27,12 +28,14 @@ function getDirectoryListing($result, $path, $cat){
 		foreach ($subCats->getElementsByTagName("a") as $s){
 			getDirectoryListing($result, $path, $s->textContent);
 		}
+		unset($subCats);
 	}
-	$mwpages = $html->getElementById("mw-pages");
-	if($mwpages) {
-		foreach ($mwpages->getElementsByTagName("a") as $a){
+	$pages = $html->getElementById("mw-pages");
+	if($pages) {
+		foreach ($pages->getElementsByTagName("a") as $a){
 			fwrite($result, "$path > $a->textContent".PHP_EOL);
 		}
+		unset($pages);
 	}
 }
 $result = fopen("result.txt", "w");
